@@ -5,13 +5,13 @@ class FilterSection {
   final String slug;
   final List<FilterOption> options;
   final bool isExpanded;
-  final int? selectedCount;
+   int selectedCount;
 
   FilterSection({
     required this.title,
     required this.slug,
     required this.options,
     this.isExpanded = false,
-    this.selectedCount,
+    this.selectedCount = 0,
   });
 }

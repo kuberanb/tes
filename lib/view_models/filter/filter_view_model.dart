@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:tes/models/filter/filter_section.dart';
 import 'package:tes/services/internet/internet_service.dart';
 
-import '../../models/filter/filter_section.dart';
 import '../../services/filter/filter_service.dart';
 
 class FilterViewModel extends ChangeNotifier {
@@ -12,25 +12,17 @@ class FilterViewModel extends ChangeNotifier {
   bool _isLoading = false;
   String? _error;
 
-  final Map<String, List<String>> _selectedFilters = {
-    'cuisine': [],
-    'suitable-diet': [],
-    'experience': [],
-    'mealperiod': [],
-    'attire': [],
-    'location': [],
-    'pricerange': [],
-    "sort": [],
-  };
-
   List<FilterSection> get sections => _sections;
   bool get isLoading => _isLoading;
   String? get error => _error;
-  Map<String, List<String>> get selectedFilters => _selectedFilters;
 
   int get totalResults {
     int count = 0;
-    _selectedFilters.forEach((key, value) => count += value.length);
+
+    for (var element in _sections) {
+      count += element.selectedCount;
+    }
+    print("total Count : $count");
     return count;
   }
 
@@ -80,11 +72,12 @@ class FilterViewModel extends ChangeNotifier {
     _sections[sectionIndex].options[optionIndex].isSelected =
         !_sections[sectionIndex].options[optionIndex].isSelected;
 
-    final sectionSlug = section.slug;
     if (_sections[sectionIndex].options[optionIndex].isSelected) {
-      _selectedFilters[sectionSlug]?.add(optionId);
+      _sections[sectionIndex].selectedCount =
+          (_sections[sectionIndex].selectedCount) + 1;
     } else {
-      _selectedFilters[sectionSlug]?.remove(optionId);
+      _sections[sectionIndex].selectedCount =
+          (_sections[sectionIndex].selectedCount) - 1;
     }
 
     notifyListeners();
